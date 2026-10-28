@@ -1,0 +1,21 @@
+# Environment files (keep the example template)
+.env
+.env.*
+!.env.example
+
+# Java / Maven
+target/
+*.iml
+
+# Node / Vite / Vercel
+node_modules/
+dist/
+coverage/
+.vercel/
+*.tsbuildinfo
+
+# Local files
+.DS_Store
+Thumbs.db
+.idea/
+*.log
