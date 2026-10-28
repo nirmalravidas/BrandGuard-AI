@@ -82,6 +82,7 @@ Do not use `docker compose down -v` unless you intend to delete that volume.
 | `DATABASE_USERNAME` | Compose / backend | PostgreSQL username; required by Compose |
 | `DATABASE_PASSWORD` | Compose / backend | PostgreSQL password; required by Compose |
 | `DATABASE_URL` | Backend | JDBC connection URL; Compose sets `jdbc:postgresql://db:5432/brandguard` |
+| `SPRING_DATASOURCE_URL` | Backend | Optional JDBC URL override; useful when a host also provides a non-JDBC `DATABASE_URL` |
 | `OPENAI_API_KEY` | Backend | Optional secret enabling hosted AI analysis |
 | `OPENAI_MODEL` | Backend | Optional model name; defaults to `gpt-4o-mini` |
 | `OPENAI_CHAT_COMPLETIONS_URL` | Backend | Optional provider endpoint |
@@ -101,13 +102,13 @@ The app can be deployed with the backend and managed PostgreSQL on Render and th
 1. Create a Render PostgreSQL database. Prefer its internal hostname when the database and backend are in the same region.
 2. Create a Render Web Service from this repository using Docker. Set the backend root directory to `backend` (or configure the Dockerfile and build context to `backend/Dockerfile` and `backend`).
 3. Add these backend environment variables in Render:
-   - `DATABASE_URL`: `jdbc:postgresql://<internal-host>:5432/<database-name>`
+   - `SPRING_DATASOURCE_URL`: `jdbc:postgresql://<internal-host>:5432/<database-name>`
    - `DATABASE_USERNAME` and `DATABASE_PASSWORD`: values from the Render database
    - `FRONTEND_ORIGIN`: your exact Vercel production origin, e.g. `https://<project>.vercel.app`
    - `OPENAI_API_KEY`: optional secret; omit it for rules-only analysis
 4. After deployment, verify `https://<backend>.onrender.com/api/health` returns `{"status":"UP"}`.
 
-Spring Boot reads Render's assigned `PORT`. Use the Render database's internal connection details and JDBC URL format; do not put credentials in the repository. Review the selected database plan, persistence, and backup options.
+Spring Boot reads Render's assigned `PORT`. Use the Render database's internal hostname and JDBC URL format. `SPRING_DATASOURCE_URL` takes precedence over `DATABASE_URL`, which avoids conflict if the host supplies `DATABASE_URL` in a URI format such as `postgresql://...`. Set the database username and password separately, and do not put credentials in the repository. Review the selected database plan, persistence, and backup options.
 
 ### Vercel: frontend
 

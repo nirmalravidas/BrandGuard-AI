@@ -2,7 +2,7 @@ spring:
   application:
     name: brandguard-api
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/brandguard}
+    url: ${SPRING_DATASOURCE_URL:${DATABASE_URL:jdbc:postgresql://localhost:5432/brandguard}}
     username: ${DATABASE_USERNAME:brandguard}
     password: ${DATABASE_PASSWORD:brandguard}
   jpa:
